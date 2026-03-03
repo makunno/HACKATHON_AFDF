@@ -1,0 +1,152 @@
+{
+  "report_metadata": {
+    "tool": "EntropyGuard",
+    "version": "1.0.0",
+    "generated_at": "2026-03-03T21:16:05.407344",
+    "scan_id": "0037d929-97ba-4561-a3a7-345894250fe5"
+  },
+  "file_validation": {
+    "file_type": "Unknown",
+    "extension": ".DD",
+    "magic_bytes": "eb3c906d6b646f73",
+    "is_valid": false,
+    "validation_message": "Unknown file type - no matching magic bytes",
+    "sha256_hash": "b173fd82a052e2637cfeb89cf21a603817f072799a63decffbfc948fc19a06e6",
+    "md5_hash": "bac12239bd466fa6c86ceb0b0426da0a"
+  },
+  "filesystem_detection": {
+    "detected": false,
+    "filesystem_type": "Unknown",
+    "message": "Could not determine data offset for container type"
+  },
+  "disk_info": {
+    "path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\115c5979-5511-46d6-88fa-0571c5301ec0-fat-img-kw.dd",
+    "size": 15728640,
+    "block_size": 4096,
+    "total_blocks": 3840
+  },
+  "summary": {
+    "anomalous_blocks": 95,
+    "anomaly_rate": 0.024739583333333332,
+    "regions_found": 1,
+    "methods_used": [
+      "zscore"
+    ]
+  },
+  "statistics": {
+    "total_blocks": 3840,
+    "anomalous_blocks": 95,
+    "anomaly_rate": 0.024739583333333332,
+    "mean_entropy": 0.18851946770854697,
+    "max_entropy": 7.962428113502335,
+    "mean_anomaly_score": 5.197247099325862,
+    "regions_found": 1
+  },
+  "suspicious_regions": [
+    {
+      "start_offset": 135168,
+      "end_offset": 512000,
+      "size": 376832,
+      "block_count": 92,
+      "mean_entropy": 7.8533,
+      "max_entropy": 7.9624,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    }
+  ],
+  "forensic_tools": {},
+  "wipe_indicators": {
+    "status": "error",
+    "error": "blkls not found - ensure The Sleuth Kit is installed",
+    "note": "Wipe pattern detection could not be performed."
+  },
+  "score_breakdown": {
+    "entropy_anomaly": {
+      "score": 95,
+      "max_score": 30,
+      "description": "Anomalous high-entropy blocks detected"
+    },
+    "region_cluster": {
+      "score": 1,
+      "max_score": 20,
+      "description": "Suspicious region clusters"
+    },
+    "wipe_signature": {
+      "score": 0,
+      "max_score": 35,
+      "description": "Wipe patterns in unallocated space"
+    },
+    "total": {
+      "score": 96,
+      "max_score": 85,
+      "normalized": 112.94
+    }
+  },
+  "recommendations": [
+    "HIGH PRIORITY: Highly suspicious region at offset 0x21000. This region has very high entropy (7.85) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "Very high maximum entropy detected (>7.8). Strong indicator of encrypted content or VeraCrypt hidden volume."
+  ],
+  "findings": [
+    {
+      "category": "Entropy anomaly profile",
+      "severity": "LOW",
+      "description": "Mean entropy 0.1885, with 95 high-entropy regions.",
+      "why_it_matters": "Normal entropy levels suggest unencrypted data.",
+      "evidence": {
+        "entropy_score": 0.1885,
+        "high_entropy_region_count": 95,
+        "max_entropy": 7.9624
+      }
+    },
+    {
+      "category": "Metadata and timestamp consistency checks",
+      "severity": "LOW",
+      "description": "0 timestamp anomalies and 0 metadata inconsistencies.",
+      "why_it_matters": "Timestamp or metadata mismatches can indicate timestomping, cloning artifacts, or anti-forensic manipulation.",
+      "evidence": {
+        "timestamp_anomalies": 0,
+        "metadata_inconsistency": 0
+      }
+    },
+    {
+      "category": "Potential wipe signatures detected",
+      "severity": "LOW",
+      "description": "0 wipe-like regions totaling 0 bytes.",
+      "why_it_matters": "Structured overwrite patterns can indicate intentional destruction or sanitization of evidence.",
+      "evidence": {
+        "wipe_region_count": 0,
+        "wipe_bytes_total": 0
+      }
+    },
+    {
+      "category": "Deleted activity concentration",
+      "severity": "LOW",
+      "description": "0 deleted entries, density 0.000000.",
+      "why_it_matters": "Deletion bursts can be normal cleanup or deliberate post-incident anti-forensic behavior.",
+      "evidence": {
+        "deleted_files_count": 0,
+        "deletion_density": 0.0
+      }
+    },
+    {
+      "category": "Slack-space anomaly signal",
+      "severity": "LOW",
+      "description": "0 suspicious slack-like regions identified.",
+      "why_it_matters": "Suspicious low-entropy slack regions may indicate hidden payloads or tampering in slack space.",
+      "evidence": {
+        "slack_anomaly_count": 0
+      }
+    },
+    {
+      "category": "Encrypted volume indicators",
+      "severity": "INFO",
+      "description": "1 high-entropy clusters totaling 376,832 bytes.",
+      "why_it_matters": "A few high-entropy regions may be normal (e.g., compressed files).",
+      "evidence": {
+        "high_entropy_clusters": 1,
+        "total_size_bytes": 376832,
+        "largest_cluster_bytes": 376832
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "image_path": "C:\\Users\\sk8er\\OneDrive\\Documents\\AFDF-updated\\server\\uploads\\958048f2-d969-4489-9d34-c1f92d8c5737-ntfs1-gen2.E01",
+  "start_sector": 0,
+  "unalloc_path": "C:\\Users\\sk8er\\OneDrive\\Documents\\AFDF-updated\\server\\results\\55335fef-dde0-47dc-97d0-36f63a525ba2\\wipe_scan\\unalloc.bin",
+  "unalloc_size_bytes": 0,
+  "metrics": {
+    "wipe_zero_bytes_total": 0,
+    "wipe_ff_bytes_total": 0,
+    "wipe_randomlike_bytes_total": 0,
+    "wipe_suspect_chunk_count": 0,
+    "scanned_bytes_total": 0
+  },
+  "regions": [],
+  "error": "blkls not found - ensure The Sleuth Kit is installed"
+}

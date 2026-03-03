@@ -1,0 +1,36 @@
+{
+  "report_metadata": {
+    "tool": "EntropyGuard",
+    "version": "1.0.0",
+    "generated_at": "2026-02-28T16:06:21.419759",
+    "scan_id": "1ca24072"
+  },
+  "disk_info": {
+    "path": "test_disk.dd",
+    "size": 52428800,
+    "block_size": 4096,
+    "total_blocks": 12800
+  },
+  "summary": {
+    "anomalous_blocks": 1,
+    "anomaly_rate": 7.8125e-05,
+    "regions_found": 0,
+    "methods_used": [
+      "zscore"
+    ]
+  },
+  "statistics": {
+    "total_blocks": 12800,
+    "anomalous_blocks": 1,
+    "anomaly_rate": 7.8125e-05,
+    "mean_entropy": 7.994825737465663,
+    "max_entropy": 8.0,
+    "mean_anomaly_score": 4.650746024414928,
+    "regions_found": 0
+  },
+  "suspicious_regions": [],
+  "recommendations": [
+    "No suspicious high-entropy regions detected. Disk appears to contain no hidden encrypted volumes.",
+    "Very high maximum entropy detected (>7.8). Strong indicator of encrypted content or VeraCrypt hidden volume."
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "disk_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\115c5979-5511-46d6-88fa-0571c5301ec0-fat-img-kw.dd",
+  "output_dir": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\results\\0037d929-97ba-4561-a3a7-345894250fe5",
+  "scan_id": "0037d929-97ba-4561-a3a7-345894250fe5",
+  "block_size": 4096,
+  "num_workers": 4,
+  "methods": [
+    "zscore"
+  ]
+}

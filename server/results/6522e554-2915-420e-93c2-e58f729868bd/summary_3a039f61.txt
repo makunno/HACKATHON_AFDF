@@ -1,0 +1,31 @@
+============================================================
+ENTROPYGUARD FORENSIC ANALYSIS REPORT
+============================================================
+
+Scan ID: 3a039f61
+Disk: C:\Users\sk8er\OneDrive\Documents\AFDF-updated\server\uploads\e4c9be1d-20c4-494e-894c-dbc58fe91cd3-nps-2009-canon2-gen1.E01
+Disk Size: 29,678,014 bytes
+Block Size: 4096 bytes
+Total Blocks: 7,246
+
+----------------------------------------
+SUMMARY
+----------------------------------------
+Anomalous Blocks: 4
+Anomaly Rate: 0.06%
+Mean Entropy: 7.9260
+Max Entropy: 7.9647
+Suspicious Regions: 1
+
+----------------------------------------
+SUSPICIOUS REGIONS
+----------------------------------------
+Region 1: Offset 0x1C4B000 - 0x1C4E000
+  Size: 12,288 bytes, Entropy: 5.6073, Score: 100.0
+
+----------------------------------------
+METHODS USED
+----------------------------------------
+zscore
+
+============================================================

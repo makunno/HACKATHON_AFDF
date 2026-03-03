@@ -1,0 +1,10 @@
+{
+  "disk_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\1c5f60d5-0997-42d8-9e2d-a20e45cfca85-nps-2009-canon2-gen6.E01",
+  "output_dir": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\results\\f0d19a0e-96f0-4318-b0d9-13f58371694a",
+  "scan_id": "f0d19a0e-96f0-4318-b0d9-13f58371694a",
+  "block_size": 4096,
+  "num_workers": 4,
+  "methods": [
+    "zscore"
+  ]
+}

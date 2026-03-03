@@ -1,0 +1,419 @@
+{
+  "report_metadata": {
+    "tool": "EntropyGuard",
+    "version": "1.0.0",
+    "generated_at": "2026-02-28T23:27:53.211732",
+    "scan_id": "8275e69f"
+  },
+  "disk_info": {
+    "path": "C:\\Users\\sk8er\\OneDrive\\Documents\\AFDF-updated\\server\\uploads\\8a7d8d4c-8507-488b-aa0d-d1b040b533f0-2020JimmyWilson.E01",
+    "size": 309818835,
+    "block_size": 4096,
+    "total_blocks": 75640
+  },
+  "summary": {
+    "anomalous_blocks": 513,
+    "anomaly_rate": 0.006782125859333686,
+    "regions_found": 29,
+    "methods_used": [
+      "zscore"
+    ]
+  },
+  "statistics": {
+    "total_blocks": 75640,
+    "anomalous_blocks": 513,
+    "anomaly_rate": 0.006782125859333686,
+    "mean_entropy": 7.922303067984427,
+    "max_entropy": 7.9698866817158756,
+    "mean_anomaly_score": 3.526344147369012,
+    "regions_found": 29
+  },
+  "suspicious_regions": [
+    {
+      "start_offset": 0,
+      "end_offset": 57344,
+      "size": 57344,
+      "block_count": 14,
+      "mean_entropy": 2.3407,
+      "max_entropy": 5.3003,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 180224,
+      "end_offset": 217088,
+      "size": 36864,
+      "block_count": 9,
+      "mean_entropy": 2.6482,
+      "max_entropy": 7.3364,
+      "mean_anomaly_score": 97.23,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 253952,
+      "end_offset": 307200,
+      "size": 53248,
+      "block_count": 13,
+      "mean_entropy": 6.0181,
+      "max_entropy": 6.0374,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 4313088,
+      "end_offset": 4362240,
+      "size": 49152,
+      "block_count": 12,
+      "mean_entropy": 6.1238,
+      "max_entropy": 7.2605,
+      "mean_anomaly_score": 96.37,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 157143040,
+      "end_offset": 157159424,
+      "size": 16384,
+      "block_count": 4,
+      "mean_entropy": 3.4332,
+      "max_entropy": 5.6196,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 235188224,
+      "end_offset": 235241472,
+      "size": 53248,
+      "block_count": 13,
+      "mean_entropy": 6.0893,
+      "max_entropy": 6.929,
+      "mean_anomaly_score": 98.38,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 235261952,
+      "end_offset": 235425792,
+      "size": 163840,
+      "block_count": 40,
+      "mean_entropy": 6.02,
+      "max_entropy": 6.0376,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 235450368,
+      "end_offset": 235864064,
+      "size": 413696,
+      "block_count": 99,
+      "mean_entropy": 6.0234,
+      "max_entropy": 7.0912,
+      "mean_anomaly_score": 99.21,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 235888640,
+      "end_offset": 236023808,
+      "size": 135168,
+      "block_count": 33,
+      "mean_entropy": 6.0194,
+      "max_entropy": 6.0375,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 236113920,
+      "end_offset": 236331008,
+      "size": 217088,
+      "block_count": 50,
+      "mean_entropy": 6.4128,
+      "max_entropy": 7.0217,
+      "mean_anomaly_score": 85.2,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 236527616,
+      "end_offset": 236576768,
+      "size": 49152,
+      "block_count": 12,
+      "mean_entropy": 6.116,
+      "max_entropy": 6.8597,
+      "mean_anomaly_score": 98.43,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 236683264,
+      "end_offset": 236785664,
+      "size": 102400,
+      "block_count": 25,
+      "mean_entropy": 6.0256,
+      "max_entropy": 6.1624,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 236810240,
+      "end_offset": 236892160,
+      "size": 81920,
+      "block_count": 20,
+      "mean_entropy": 6.0348,
+      "max_entropy": 6.1969,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 238338048,
+      "end_offset": 238366720,
+      "size": 28672,
+      "block_count": 7,
+      "mean_entropy": 6.1851,
+      "max_entropy": 6.9036,
+      "mean_anomaly_score": 97.21,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 238374912,
+      "end_offset": 238456832,
+      "size": 81920,
+      "block_count": 20,
+      "mean_entropy": 6.066,
+      "max_entropy": 6.9542,
+      "mean_anomaly_score": 98.85,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 239067136,
+      "end_offset": 239079424,
+      "size": 12288,
+      "block_count": 3,
+      "mean_entropy": 6.2293,
+      "max_entropy": 6.6144,
+      "mean_anomaly_score": 98.86,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 240062464,
+      "end_offset": 240103424,
+      "size": 40960,
+      "block_count": 10,
+      "mean_entropy": 3.4712,
+      "max_entropy": 7.3031,
+      "mean_anomaly_score": 95.41,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 241684480,
+      "end_offset": 241696768,
+      "size": 12288,
+      "block_count": 3,
+      "mean_entropy": 5.1832,
+      "max_entropy": 6.7899,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 241995776,
+      "end_offset": 242008064,
+      "size": 12288,
+      "block_count": 3,
+      "mean_entropy": 4.1754,
+      "max_entropy": 5.7121,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 268328960,
+      "end_offset": 268361728,
+      "size": 32768,
+      "block_count": 7,
+      "mean_entropy": 4.6376,
+      "max_entropy": 6.5271,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 268386304,
+      "end_offset": 268398592,
+      "size": 12288,
+      "block_count": 3,
+      "mean_entropy": 4.2363,
+      "max_entropy": 6.5899,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 268439552,
+      "end_offset": 268455936,
+      "size": 16384,
+      "block_count": 3,
+      "mean_entropy": 6.3985,
+      "max_entropy": 7.456,
+      "mean_anomaly_score": 87.59,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 268902400,
+      "end_offset": 268918784,
+      "size": 16384,
+      "block_count": 3,
+      "mean_entropy": 7.2471,
+      "max_entropy": 7.5098,
+      "mean_anomaly_score": 79.76,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 279683072,
+      "end_offset": 279699456,
+      "size": 16384,
+      "block_count": 4,
+      "mean_entropy": 3.9573,
+      "max_entropy": 6.1275,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 280170496,
+      "end_offset": 280182784,
+      "size": 12288,
+      "block_count": 3,
+      "mean_entropy": 5.9618,
+      "max_entropy": 6.5523,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 282644480,
+      "end_offset": 282660864,
+      "size": 16384,
+      "block_count": 4,
+      "mean_entropy": 3.0828,
+      "max_entropy": 6.1715,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 298999808,
+      "end_offset": 299032576,
+      "size": 32768,
+      "block_count": 7,
+      "mean_entropy": 4.4311,
+      "max_entropy": 5.2726,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 299044864,
+      "end_offset": 299061248,
+      "size": 16384,
+      "block_count": 4,
+      "mean_entropy": 5.7269,
+      "max_entropy": 7.3394,
+      "mean_anomaly_score": 90.88,
+      "max_anomaly_score": 100
+    },
+    {
+      "start_offset": 309727232,
+      "end_offset": 309821440,
+      "size": 94208,
+      "block_count": 23,
+      "mean_entropy": 6.1129,
+      "max_entropy": 6.9036,
+      "mean_anomaly_score": 90.36,
+      "max_anomaly_score": 100
+    }
+  ],
+  "forensic_tools": {},
+  "recommendations": [
+    "HIGH PRIORITY: Highly suspicious region at offset 0x0. This region has very high entropy (2.34) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x2C000. This region has very high entropy (2.65) and anomaly score (97.2), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x3E000. This region has very high entropy (6.02) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x41D000. This region has very high entropy (6.12) and anomaly score (96.4), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x95DD000. This region has very high entropy (3.43) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE04B000. This region has very high entropy (6.09) and anomaly score (98.4), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE05D000. This region has very high entropy (6.02) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE08B000. This region has very high entropy (6.02) and anomaly score (99.2), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE0F6000. This region has very high entropy (6.02) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE12D000. This region has very high entropy (6.41) and anomaly score (85.2), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE192000. This region has very high entropy (6.12) and anomaly score (98.4), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE1B8000. This region has very high entropy (6.03) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE1D7000. This region has very high entropy (6.03) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE34C000. This region has very high entropy (6.19) and anomaly score (97.2), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE355000. This region has very high entropy (6.07) and anomaly score (98.8), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE3FE000. This region has very high entropy (6.23) and anomaly score (98.9), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE4F1000. This region has very high entropy (3.47) and anomaly score (95.4), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE67D000. This region has very high entropy (5.18) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xE6C9000. This region has very high entropy (4.18) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xFFE6000. This region has very high entropy (4.64) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0xFFF4000. This region has very high entropy (4.24) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x10001000. This region has very high entropy (6.40) and anomaly score (87.6), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "MEDIUM PRIORITY: Suspicious region at offset 0x10072000. Entropy (7.25) suggests possible steganography or compressed data. Manual review recommended.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x10ABA000. This region has very high entropy (3.96) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x10B31000. This region has very high entropy (5.96) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x10D8D000. This region has very high entropy (3.08) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x11D26000. This region has very high entropy (4.43) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x11D31000. This region has very high entropy (5.73) and anomaly score (90.9), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "HIGH PRIORITY: Highly suspicious region at offset 0x12761000. This region has very high entropy (6.11) and anomaly score (90.4), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "Very high maximum entropy detected (>7.8). Strong indicator of encrypted content or VeraCrypt hidden volume."
+  ],
+  "findings": [
+    {
+      "category": "Entropy anomaly profile",
+      "severity": "HIGH",
+      "description": "Mean entropy 7.9223, with 513 high-entropy regions.",
+      "why_it_matters": "Large high-entropy zones can represent encryption, packing, or random overwrite behavior.",
+      "evidence": {
+        "entropy_score": 7.9223,
+        "high_entropy_region_count": 513,
+        "max_entropy": 7.9699
+      }
+    },
+    {
+      "category": "Metadata and timestamp consistency checks",
+      "severity": "LOW",
+      "description": "0 timestamp anomalies and 0 metadata inconsistencies.",
+      "why_it_matters": "Timestamp or metadata mismatches can indicate timestomping, cloning artifacts, or anti-forensic manipulation.",
+      "evidence": {
+        "timestamp_anomalies": 0,
+        "metadata_inconsistency": 0
+      }
+    },
+    {
+      "category": "Potential wipe signatures detected",
+      "severity": "LOW",
+      "description": "0 wipe-like regions totaling 0 bytes.",
+      "why_it_matters": "Structured overwrite patterns can indicate intentional destruction or sanitization of evidence.",
+      "evidence": {
+        "wipe_region_count": 0,
+        "wipe_bytes_total": 0
+      }
+    },
+    {
+      "category": "Deleted activity concentration",
+      "severity": "LOW",
+      "description": "0 deleted entries, density 0.000000.",
+      "why_it_matters": "Deletion bursts can be normal cleanup or deliberate post-incident anti-forensic behavior.",
+      "evidence": {
+        "deleted_files_count": 0,
+        "deletion_density": 0.0
+      }
+    },
+    {
+      "category": "Slack-space anomaly signal",
+      "severity": "LOW",
+      "description": "0 suspicious slack-like regions identified.",
+      "why_it_matters": "Suspicious low-entropy slack regions may indicate hidden payloads or tampering in slack space.",
+      "evidence": {
+        "slack_anomaly_count": 0
+      }
+    },
+    {
+      "category": "Encrypted volume indicators",
+      "severity": "INFO",
+      "description": "1 high-entropy clusters totaling 16,384 bytes.",
+      "why_it_matters": "A few high-entropy regions may be normal (e.g., compressed files).",
+      "evidence": {
+        "high_entropy_clusters": 1,
+        "total_size_bytes": 16384,
+        "largest_cluster_bytes": 16384
+      }
+    }
+  ]
+}

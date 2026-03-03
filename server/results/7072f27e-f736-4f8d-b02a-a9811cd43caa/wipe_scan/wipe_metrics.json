@@ -1,0 +1,18 @@
+{
+  "image_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\0ea5b641-9f94-47eb-b419-d06ba70a01b9-nps-2009-canon2-gen1.E01",
+  "start_sector": 0,
+  "unalloc_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\results\\7072f27e-f736-4f8d-b02a-a9811cd43caa\\wipe_scan\\unalloc.bin",
+  "unalloc_size_bytes": 0,
+  "metrics": {
+    "wipe_zero_bytes_total": 0,
+    "wipe_ff_bytes_total": 0,
+    "wipe_randomlike_bytes_total": 0,
+    "wipe_dod_bytes_total": 0,
+    "wipe_gutmann_bytes_total": 0,
+    "wipe_suspect_chunk_count": 0,
+    "scanned_bytes_total": 0,
+    "detected_wipe_software": []
+  },
+  "regions": [],
+  "error": "blkls not found - ensure The Sleuth Kit is installed"
+}

@@ -1,0 +1,87 @@
+============================================================
+ENTROPYGUARD FORENSIC ANALYSIS REPORT
+============================================================
+
+Scan ID: 9ec38fad
+Disk: C:\Users\sk8er\OneDrive\Documents\AFDF-updated\server\uploads\b34a6f80-7ce2-48e5-a3fd-a2ac024f2ecd-2020JimmyWilson.E01
+Disk Size: 309,818,835 bytes
+Block Size: 4096 bytes
+Total Blocks: 75,640
+
+----------------------------------------
+SUMMARY
+----------------------------------------
+Anomalous Blocks: 513
+Anomaly Rate: 0.68%
+Mean Entropy: 7.9223
+Max Entropy: 7.9699
+Suspicious Regions: 29
+
+----------------------------------------
+SUSPICIOUS REGIONS
+----------------------------------------
+Region 1: Offset 0x0 - 0xE000
+  Size: 57,344 bytes, Entropy: 2.3407, Score: 100.0
+Region 2: Offset 0x2C000 - 0x35000
+  Size: 36,864 bytes, Entropy: 2.6482, Score: 97.2
+Region 3: Offset 0x3E000 - 0x4B000
+  Size: 53,248 bytes, Entropy: 6.0181, Score: 100.0
+Region 4: Offset 0x41D000 - 0x429000
+  Size: 49,152 bytes, Entropy: 6.1238, Score: 96.4
+Region 5: Offset 0x95DD000 - 0x95E1000
+  Size: 16,384 bytes, Entropy: 3.4332, Score: 100.0
+Region 6: Offset 0xE04B000 - 0xE058000
+  Size: 53,248 bytes, Entropy: 6.0893, Score: 98.4
+Region 7: Offset 0xE05D000 - 0xE085000
+  Size: 163,840 bytes, Entropy: 6.0200, Score: 100.0
+Region 8: Offset 0xE08B000 - 0xE0F0000
+  Size: 413,696 bytes, Entropy: 6.0234, Score: 99.2
+Region 9: Offset 0xE0F6000 - 0xE117000
+  Size: 135,168 bytes, Entropy: 6.0194, Score: 100.0
+Region 10: Offset 0xE12D000 - 0xE162000
+  Size: 217,088 bytes, Entropy: 6.4128, Score: 85.2
+Region 11: Offset 0xE192000 - 0xE19E000
+  Size: 49,152 bytes, Entropy: 6.1160, Score: 98.4
+Region 12: Offset 0xE1B8000 - 0xE1D1000
+  Size: 102,400 bytes, Entropy: 6.0256, Score: 100.0
+Region 13: Offset 0xE1D7000 - 0xE1EB000
+  Size: 81,920 bytes, Entropy: 6.0348, Score: 100.0
+Region 14: Offset 0xE34C000 - 0xE353000
+  Size: 28,672 bytes, Entropy: 6.1851, Score: 97.2
+Region 15: Offset 0xE355000 - 0xE369000
+  Size: 81,920 bytes, Entropy: 6.0660, Score: 98.8
+Region 16: Offset 0xE3FE000 - 0xE401000
+  Size: 12,288 bytes, Entropy: 6.2293, Score: 98.9
+Region 17: Offset 0xE4F1000 - 0xE4FB000
+  Size: 40,960 bytes, Entropy: 3.4712, Score: 95.4
+Region 18: Offset 0xE67D000 - 0xE680000
+  Size: 12,288 bytes, Entropy: 5.1832, Score: 100.0
+Region 19: Offset 0xE6C9000 - 0xE6CC000
+  Size: 12,288 bytes, Entropy: 4.1754, Score: 100.0
+Region 20: Offset 0xFFE6000 - 0xFFEE000
+  Size: 32,768 bytes, Entropy: 4.6376, Score: 100.0
+Region 21: Offset 0xFFF4000 - 0xFFF7000
+  Size: 12,288 bytes, Entropy: 4.2363, Score: 100.0
+Region 22: Offset 0x10001000 - 0x10005000
+  Size: 16,384 bytes, Entropy: 6.3985, Score: 87.6
+Region 23: Offset 0x10072000 - 0x10076000
+  Size: 16,384 bytes, Entropy: 7.2471, Score: 79.8
+Region 24: Offset 0x10ABA000 - 0x10ABE000
+  Size: 16,384 bytes, Entropy: 3.9573, Score: 100.0
+Region 25: Offset 0x10B31000 - 0x10B34000
+  Size: 12,288 bytes, Entropy: 5.9618, Score: 100.0
+Region 26: Offset 0x10D8D000 - 0x10D91000
+  Size: 16,384 bytes, Entropy: 3.0828, Score: 100.0
+Region 27: Offset 0x11D26000 - 0x11D2E000
+  Size: 32,768 bytes, Entropy: 4.4311, Score: 100.0
+Region 28: Offset 0x11D31000 - 0x11D35000
+  Size: 16,384 bytes, Entropy: 5.7269, Score: 90.9
+Region 29: Offset 0x12761000 - 0x12778000
+  Size: 94,208 bytes, Entropy: 6.1129, Score: 90.4
+
+----------------------------------------
+METHODS USED
+----------------------------------------
+zscore
+
+============================================================

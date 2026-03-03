@@ -1,0 +1,110 @@
+{
+  "report_metadata": {
+    "tool": "EntropyGuard",
+    "version": "1.0.0",
+    "generated_at": "2026-02-28T22:35:42.049255",
+    "scan_id": "2161ab5a"
+  },
+  "disk_info": {
+    "path": "C:\\Users\\sk8er\\OneDrive\\Documents\\AFDF-updated\\server\\uploads\\b3b6df1f-882a-4d34-9cef-b65cab4f3f19-fat-img-kw.dd",
+    "size": 15728640,
+    "block_size": 4096,
+    "total_blocks": 3840
+  },
+  "summary": {
+    "anomalous_blocks": 95,
+    "anomaly_rate": 0.024739583333333332,
+    "regions_found": 1,
+    "methods_used": [
+      "zscore"
+    ]
+  },
+  "statistics": {
+    "total_blocks": 3840,
+    "anomalous_blocks": 95,
+    "anomaly_rate": 0.024739583333333332,
+    "mean_entropy": 0.18851946770854697,
+    "max_entropy": 7.962428113502335,
+    "mean_anomaly_score": 5.197247099325862,
+    "regions_found": 1
+  },
+  "suspicious_regions": [
+    {
+      "start_offset": 135168,
+      "end_offset": 512000,
+      "size": 376832,
+      "block_count": 92,
+      "mean_entropy": 7.8533,
+      "max_entropy": 7.9624,
+      "mean_anomaly_score": 100.0,
+      "max_anomaly_score": 100
+    }
+  ],
+  "recommendations": [
+    "HIGH PRIORITY: Highly suspicious region at offset 0x21000. This region has very high entropy (7.85) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+    "Very high maximum entropy detected (>7.8). Strong indicator of encrypted content or VeraCrypt hidden volume."
+  ],
+  "findings": [
+    {
+      "category": "Entropy anomaly profile",
+      "severity": "LOW",
+      "description": "Mean entropy 0.1885, with 95 high-entropy regions.",
+      "why_it_matters": "Normal entropy levels suggest unencrypted data.",
+      "evidence": {
+        "entropy_score": 0.1885,
+        "high_entropy_region_count": 95,
+        "max_entropy": 7.9624
+      }
+    },
+    {
+      "category": "Metadata and timestamp consistency checks",
+      "severity": "LOW",
+      "description": "0 timestamp anomalies and 0 metadata inconsistencies.",
+      "why_it_matters": "Timestamp or metadata mismatches can indicate timestomping, cloning artifacts, or anti-forensic manipulation.",
+      "evidence": {
+        "timestamp_anomalies": 0,
+        "metadata_inconsistency": 0
+      }
+    },
+    {
+      "category": "Potential wipe signatures detected",
+      "severity": "LOW",
+      "description": "0 wipe-like regions totaling 0 bytes.",
+      "why_it_matters": "Structured overwrite patterns can indicate intentional destruction or sanitization of evidence.",
+      "evidence": {
+        "wipe_region_count": 0,
+        "wipe_bytes_total": 0
+      }
+    },
+    {
+      "category": "Deleted activity concentration",
+      "severity": "LOW",
+      "description": "0 deleted entries, density 0.000000.",
+      "why_it_matters": "Deletion bursts can be normal cleanup or deliberate post-incident anti-forensic behavior.",
+      "evidence": {
+        "deleted_files_count": 0,
+        "deletion_density": 0.0
+      }
+    },
+    {
+      "category": "Slack-space anomaly signal",
+      "severity": "LOW",
+      "description": "0 suspicious slack-like regions identified.",
+      "why_it_matters": "Suspicious low-entropy slack regions may indicate hidden payloads or tampering in slack space.",
+      "evidence": {
+        "slack_anomaly_count": 0
+      }
+    },
+    {
+      "category": "Encrypted volume indicators",
+      "severity": "INFO",
+      "description": "1 high-entropy clusters totaling 376,832 bytes.",
+      "why_it_matters": "A few high-entropy regions may be normal (e.g., compressed files).",
+      "evidence": {
+        "high_entropy_clusters": 1,
+        "total_size_bytes": 376832,
+        "largest_cluster_bytes": 376832
+      }
+    }
+  ]
+}

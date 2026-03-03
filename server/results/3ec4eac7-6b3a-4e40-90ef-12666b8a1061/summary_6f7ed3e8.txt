@@ -1,0 +1,35 @@
+============================================================
+ENTROPYGUARD FORENSIC ANALYSIS REPORT
+============================================================
+
+Scan ID: 6f7ed3e8
+Disk: C:\Users\sk8er\Downloads\AFDF-updated_updated_more\server\uploads\7ea084c3-f366-476b-830c-86fe67f05593-ntfs1-gen2.E01
+Disk Size: 36,083,007 bytes
+Block Size: 4096 bytes
+Total Blocks: 8,810
+
+----------------------------------------
+SUMMARY
+----------------------------------------
+Anomalous Blocks: 171
+Anomaly Rate: 1.94%
+Mean Entropy: 7.7433
+Max Entropy: 7.9675
+Suspicious Regions: 3
+
+----------------------------------------
+SUSPICIOUS REGIONS
+----------------------------------------
+Region 1: Offset 0x145B000 - 0x1488000
+  Size: 184,320 bytes, Entropy: 2.0563, Score: 100.0
+Region 2: Offset 0x1506000 - 0x151F000
+  Size: 102,400 bytes, Entropy: 2.0645, Score: 99.8
+Region 3: Offset 0x21E6000 - 0x224A000
+  Size: 409,600 bytes, Entropy: 2.0008, Score: 100.0
+
+----------------------------------------
+METHODS USED
+----------------------------------------
+zscore
+
+============================================================

@@ -1,0 +1,31 @@
+============================================================
+ENTROPYGUARD FORENSIC ANALYSIS REPORT
+============================================================
+
+Scan ID: 4b9da9c9
+Disk: C:\Users\sk8er\OneDrive\Documents\AFDF-updated\server\uploads\4b1cb354-6a45-4ce2-bc09-4bd40c0b1f16-fat-img-kw.dd
+Disk Size: 15,728,640 bytes
+Block Size: 4096 bytes
+Total Blocks: 3,840
+
+----------------------------------------
+SUMMARY
+----------------------------------------
+Anomalous Blocks: 95
+Anomaly Rate: 2.47%
+Mean Entropy: 0.1885
+Max Entropy: 7.9624
+Suspicious Regions: 1
+
+----------------------------------------
+SUSPICIOUS REGIONS
+----------------------------------------
+Region 1: Offset 0x21000 - 0x7D000
+  Size: 376,832 bytes, Entropy: 7.8533, Score: 100.0
+
+----------------------------------------
+METHODS USED
+----------------------------------------
+zscore
+
+============================================================

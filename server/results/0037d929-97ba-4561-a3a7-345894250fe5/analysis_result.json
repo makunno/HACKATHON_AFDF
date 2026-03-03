@@ -1,0 +1,327 @@
+{
+  "integrityScore": 0,
+  "tamperProbability": "HIGH",
+  "riskLevel": "CRITICAL",
+  "verdict": "TAMPERED",
+  "anomalies": 7,
+  "techniques": [
+    "Evidence Sanitization",
+    "Zero-Filled Image"
+  ],
+  "details": {
+    "hash": "b173fd82a052e2637cfeb89cf21a603817f072799a63decffbfc948fc19a06e6",
+    "entropy": 0.34939857822410597,
+    "nullRatio": 0.976434326171875,
+    "fileType": "Raw Disk Image",
+    "fileSize": 15728640,
+    "anomalies": [
+      {
+        "type": "Data Wiping",
+        "location": "Multiple sectors",
+        "description": "Pattern consistent with data wiping or secure deletion",
+        "severity": "critical"
+      },
+      {
+        "type": "Timestamp Anomaly",
+        "location": "Various sectors",
+        "description": "Far-future timestamp at offset 512",
+        "severity": "high"
+      },
+      {
+        "type": "Timestamp Anomaly",
+        "location": "Various sectors",
+        "description": "Zero timestamp (epoch) at offset 1024",
+        "severity": "high"
+      },
+      {
+        "type": "Timestamp Anomaly",
+        "location": "Various sectors",
+        "description": "Zero timestamp (epoch) at offset 1536",
+        "severity": "high"
+      },
+      {
+        "type": "Timestamp Anomaly",
+        "location": "Various sectors",
+        "description": "Zero timestamp (epoch) at offset 2048",
+        "severity": "high"
+      },
+      {
+        "type": "Timestamp Anomaly",
+        "location": "Various sectors",
+        "description": "Zero timestamp (epoch) at offset 2560",
+        "severity": "high"
+      },
+      {
+        "type": "Very Low Entropy",
+        "location": "Full File",
+        "description": "Entropy 0.3494 - possible zero-filled image",
+        "severity": "low"
+      }
+    ],
+    "timeline": [
+      {
+        "timestamp": "2024-01-01T00:00:00Z",
+        "event": "Evidence Acquired"
+      },
+      {
+        "timestamp": "2024-01-01T01:00:00Z",
+        "event": "Hash Verification"
+      },
+      {
+        "timestamp": "2026-03-03T15:46:06.476790+00:00",
+        "event": "Analysis Complete"
+      }
+    ],
+    "mlFeatures": {
+      "entropyScore": 0.043674822278013246,
+      "anomalyScore": 0.7,
+      "tamperingScore": 1
+    },
+    "detectedFilesystems": [
+      "FAT12",
+      "FAT16"
+    ],
+    "antiForensicTools": [],
+    "hasWipingPatterns": true,
+    "repeatingChunks": 0
+  },
+  "hashes": {
+    "md5": "bac12239bd466fa6c86ceb0b0426da0a",
+    "sha1": "",
+    "sha256": "b173fd82a052e2637cfeb89cf21a603817f072799a63decffbfc948fc19a06e6"
+  },
+  "fileName": "fat-img-kw.dd",
+  "fileSize": 15728640,
+  "analyzedAt": "2026-03-03T15:46:06.529Z",
+  "fileValidation": {
+    "fileType": "Unknown",
+    "fileTypeName": "Unknown",
+    "declaredExtension": ".dd",
+    "magicBytes": "eb3c906d6b646f73",
+    "isValid": true,
+    "validationMessage": "VALID (extension matches magic bytes)"
+  },
+  "filesystem": {
+    "detected": true,
+    "filesystemType": "FAT12",
+    "name": "FAT12 Filesystem",
+    "dataOffset": 0,
+    "method": "Magic bytes analysis",
+    "confidence": 95,
+    "details": {
+      "message": "FAT12 Filesystem detected",
+      "magicBytes": "eb3c90"
+    }
+  },
+  "mlAnalysis": {
+    "modelName": "AFDF Ensemble (Random Forest + Isolation Forest) v2.0",
+    "prediction": "QUESTIONABLE",
+    "confidence": 0.588,
+    "tamperProbabilityML": 0.5,
+    "anomalyScore": 0.5,
+    "featuresImportance": {
+      "entropy": 0.1442239884840694,
+      "null_ratio": 0.05767618839788386,
+      "repeating_chunks": 0.13884162577126538,
+      "timestamp_anomalies": 0.05716378346681241,
+      "wiping_detected": 0.010817160367722164,
+      "anti_forensic_tool": 0,
+      "hidden_data": 0,
+      "high_entropy": 0.006929737286535743,
+      "unknown_filesystem": 0.00405715811965812,
+      "file_size": 0.0029525629696322974,
+      "sector_alignment": 0
+    },
+    "accuracy": 0.923,
+    "precision": 0.89,
+    "recall": 0.91,
+    "f1Score": 0.9
+  },
+  "pythonAnalysis": {
+    "report_metadata": {
+      "tool": "EntropyGuard",
+      "version": "1.0.0",
+      "generated_at": "2026-03-03T21:16:05.407344",
+      "scan_id": "0037d929-97ba-4561-a3a7-345894250fe5"
+    },
+    "file_validation": {
+      "file_type": "Unknown",
+      "extension": ".DD",
+      "magic_bytes": "eb3c906d6b646f73",
+      "is_valid": false,
+      "validation_message": "Unknown file type - no matching magic bytes",
+      "sha256_hash": "b173fd82a052e2637cfeb89cf21a603817f072799a63decffbfc948fc19a06e6",
+      "md5_hash": "bac12239bd466fa6c86ceb0b0426da0a"
+    },
+    "filesystem_detection": {
+      "detected": false,
+      "filesystem_type": "Unknown",
+      "message": "Could not determine data offset for container type"
+    },
+    "disk_info": {
+      "path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\115c5979-5511-46d6-88fa-0571c5301ec0-fat-img-kw.dd",
+      "size": 15728640,
+      "block_size": 4096,
+      "total_blocks": 3840
+    },
+    "summary": {
+      "anomalous_blocks": 95,
+      "anomaly_rate": 0.024739583333333332,
+      "regions_found": 1,
+      "methods_used": [
+        "zscore"
+      ]
+    },
+    "statistics": {
+      "total_blocks": 3840,
+      "anomalous_blocks": 95,
+      "anomaly_rate": 0.024739583333333332,
+      "mean_entropy": 0.18851946770854697,
+      "max_entropy": 7.962428113502335,
+      "mean_anomaly_score": 5.197247099325862,
+      "regions_found": 1
+    },
+    "suspicious_regions": [
+      {
+        "start_offset": 135168,
+        "end_offset": 512000,
+        "size": 376832,
+        "block_count": 92,
+        "mean_entropy": 7.8533,
+        "max_entropy": 7.9624,
+        "mean_anomaly_score": 100,
+        "max_anomaly_score": 100
+      }
+    ],
+    "forensic_tools": {},
+    "wipe_indicators": {
+      "status": "error",
+      "error": "blkls not found - ensure The Sleuth Kit is installed",
+      "note": "Wipe pattern detection could not be performed."
+    },
+    "score_breakdown": {
+      "entropy_anomaly": {
+        "score": 95,
+        "max_score": 30,
+        "description": "Anomalous high-entropy blocks detected"
+      },
+      "region_cluster": {
+        "score": 1,
+        "max_score": 20,
+        "description": "Suspicious region clusters"
+      },
+      "wipe_signature": {
+        "score": 0,
+        "max_score": 35,
+        "description": "Wipe patterns in unallocated space"
+      },
+      "total": {
+        "score": 96,
+        "max_score": 85,
+        "normalized": 112.94
+      }
+    },
+    "recommendations": [
+      "HIGH PRIORITY: Highly suspicious region at offset 0x21000. This region has very high entropy (7.85) and anomaly score (100.0), indicating likely encrypted or hidden data. Consider further analysis with cryptographic tools.",
+      "Very high maximum entropy detected (>7.8). Strong indicator of encrypted content or VeraCrypt hidden volume."
+    ],
+    "findings": [
+      {
+        "category": "Entropy anomaly profile",
+        "severity": "LOW",
+        "description": "Mean entropy 0.1885, with 95 high-entropy regions.",
+        "why_it_matters": "Normal entropy levels suggest unencrypted data.",
+        "evidence": {
+          "entropy_score": 0.1885,
+          "high_entropy_region_count": 95,
+          "max_entropy": 7.9624
+        }
+      },
+      {
+        "category": "Metadata and timestamp consistency checks",
+        "severity": "LOW",
+        "description": "0 timestamp anomalies and 0 metadata inconsistencies.",
+        "why_it_matters": "Timestamp or metadata mismatches can indicate timestomping, cloning artifacts, or anti-forensic manipulation.",
+        "evidence": {
+          "timestamp_anomalies": 0,
+          "metadata_inconsistency": 0
+        }
+      },
+      {
+        "category": "Potential wipe signatures detected",
+        "severity": "LOW",
+        "description": "0 wipe-like regions totaling 0 bytes.",
+        "why_it_matters": "Structured overwrite patterns can indicate intentional destruction or sanitization of evidence.",
+        "evidence": {
+          "wipe_region_count": 0,
+          "wipe_bytes_total": 0
+        }
+      },
+      {
+        "category": "Deleted activity concentration",
+        "severity": "LOW",
+        "description": "0 deleted entries, density 0.000000.",
+        "why_it_matters": "Deletion bursts can be normal cleanup or deliberate post-incident anti-forensic behavior.",
+        "evidence": {
+          "deleted_files_count": 0,
+          "deletion_density": 0
+        }
+      },
+      {
+        "category": "Slack-space anomaly signal",
+        "severity": "LOW",
+        "description": "0 suspicious slack-like regions identified.",
+        "why_it_matters": "Suspicious low-entropy slack regions may indicate hidden payloads or tampering in slack space.",
+        "evidence": {
+          "slack_anomaly_count": 0
+        }
+      },
+      {
+        "category": "Encrypted volume indicators",
+        "severity": "INFO",
+        "description": "1 high-entropy clusters totaling 376,832 bytes.",
+        "why_it_matters": "A few high-entropy regions may be normal (e.g., compressed files).",
+        "evidence": {
+          "high_entropy_clusters": 1,
+          "total_size_bytes": 376832,
+          "largest_cluster_bytes": 376832
+        }
+      }
+    ]
+  },
+  "wipeMetrics": null,
+  "wipeScore": 0,
+  "wipeIndicators": {
+    "status": "error",
+    "error": "blkls not found - ensure The Sleuth Kit is installed",
+    "note": "Wipe pattern detection could not be performed."
+  },
+  "entropyStats": {
+    "total_blocks": 3840,
+    "anomalous_blocks": 95,
+    "anomaly_rate": 0.024739583333333332,
+    "mean_entropy": 0.18851946770854697,
+    "max_entropy": 7.962428113502335,
+    "mean_anomaly_score": 5.197247099325862,
+    "regions_found": 1
+  },
+  "suspiciousRegions": [
+    {
+      "start_offset": 135168,
+      "end_offset": 512000,
+      "size": 376832,
+      "block_count": 92,
+      "mean_entropy": 7.8533,
+      "max_entropy": 7.9624,
+      "mean_anomaly_score": 100,
+      "max_anomaly_score": 100
+    }
+  ],
+  "forensics": {
+    "partitions": [],
+    "filesystem": null,
+    "deletedFiles": [],
+    "artifacts": [],
+    "wipeDetection": null
+  }
+}

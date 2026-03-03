@@ -1,0 +1,246 @@
+{
+  "examiner_info": {
+    "name": "Examiner",
+    "title": "Forensic Analyst",
+    "organization": "Lab",
+    "qualifications": [],
+    "contact": null,
+    "experience_years": null
+  },
+  "case_info": {
+    "case_number": "UNKNOWN",
+    "case_name": null,
+    "legal_authority": null,
+    "authorization_date": null,
+    "exhibit_number": null
+  },
+  "acquisition_details": {
+    "acquisition_tool": "Unknown",
+    "acquisition_method": "Unknown",
+    "write_blocker": null,
+    "original_hash_sha256": null,
+    "original_hash_md5": null,
+    "acquisition_date": "Unknown",
+    "source_device": null,
+    "evidence_location": null
+  },
+  "chain_of_custody": {
+    "entries": [
+      {
+        "timestamp": "2026-03-01T10:05:09.481988",
+        "action": "Evidence received",
+        "person": "Examiner",
+        "location": "Lab",
+        "notes": "Evidence received for forensic analysis"
+      },
+      {
+        "timestamp": "2026-03-01T10:05:09.482037",
+        "action": "Analysis started",
+        "person": "Examiner",
+        "location": "Lab",
+        "notes": "Analysis started using EntropyGuard"
+      },
+      {
+        "timestamp": "2026-03-01T10:05:09.482043",
+        "action": "Analysis completed",
+        "person": "Examiner",
+        "location": "Lab",
+        "notes": "Forensic analysis completed"
+      }
+    ]
+  },
+  "forensic_environment": {
+    "analysis_system": "makPC",
+    "os_version": "Windows 11",
+    "timezone": "UTC",
+    "tools": [
+      {
+        "name": "mmls",
+        "version": "not installed"
+      },
+      {
+        "name": "fls",
+        "version": "not installed"
+      },
+      {
+        "name": "blkls",
+        "version": "not installed"
+      },
+      {
+        "name": "fsstat",
+        "version": "not installed"
+      },
+      {
+        "name": "strings",
+        "version": "not installed"
+      }
+    ],
+    "python_version": "3.14.0",
+    "library_versions": null
+  },
+  "integrity_verification": {
+    "evidence_hash_sha256": null,
+    "evidence_hash_md5": null,
+    "acquisition_verified": false,
+    "write_blocker_used": false,
+    "verification_method": "Hash comparison before and after analysis"
+  },
+  "methodology": [
+    {
+      "step_number": 1,
+      "description": "Evidence acquisition and hashing",
+      "tool_used": "FTK Imager/dd",
+      "parameters": null,
+      "results": "Evidence image created with write blocker"
+    },
+    {
+      "step_number": 2,
+      "description": "Partition table analysis",
+      "tool_used": "mmls",
+      "parameters": {
+        "disk_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\035da019-0d53-4350-bf9f-5b7cd7e9d369-fat-img-kw.dd"
+      },
+      "results": "Found 1 partitions"
+    },
+    {
+      "step_number": 3,
+      "description": "Entropy analysis for hidden volume detection",
+      "tool_used": "EntropyGuard",
+      "parameters": {
+        "block_size": 4096,
+        "methods": [
+          "zscore"
+        ]
+      },
+      "results": "Scanned 3840 blocks"
+    },
+    {
+      "step_number": 4,
+      "description": "Wipe pattern detection in unallocated space",
+      "tool_used": "blkls + custom analysis",
+      "parameters": null,
+      "results": "Analyzed unallocated space for anti-forensic indicators"
+    },
+    {
+      "step_number": 5,
+      "description": "Forensic artifact extraction",
+      "tool_used": "bulk_extractor",
+      "parameters": null,
+      "results": "Extracted email, URL, and other artifacts"
+    }
+  ],
+  "filesystem_overview": {
+    "partitions": [],
+    "primary_filesystem": null,
+    "cluster_size": null
+  },
+  "artifact_findings": [
+    {
+      "category": "High-Entropy Region",
+      "severity": "HIGH",
+      "title": "Suspicious Region 1",
+      "description": "High entropy region detected indicating potential encrypted volume or hidden data",
+      "location": "Sector offset: 135168 - 512000",
+      "timestamps": null,
+      "expected_value": "Normal entropy (< 7.0)",
+      "observed_value": "Mean entropy: 7.8533",
+      "interpretation": "This region shows anomalous entropy characteristics (7.85) which may indicate encrypted content, compressed data, or a hidden volume.",
+      "evidence_data": null
+    }
+  ],
+  "timeline": [
+    {
+      "timestamp": "Unknown",
+      "source": "Evidence Acquisition",
+      "description": "Evidence collected and hashed",
+      "artifact_type": null
+    },
+    {
+      "timestamp": "2026-03-01T10:05:09.488289",
+      "source": "EntropyGuard Analysis",
+      "description": "Forensic analysis completed",
+      "artifact_type": null
+    }
+  ],
+  "anti_forensic_findings": [
+    {
+      "technique": "Encryption / Hidden Volume",
+      "detected": true,
+      "evidence": "Found 95 high-entropy blocks with mean entropy 0.1885",
+      "regions": [
+        {
+          "start": 135168,
+          "end": 512000,
+          "entropy": 7.8533
+        }
+      ],
+      "interpretation": "High entropy regions may indicate encrypted volumes, compressed data, or hidden partitions."
+    }
+  ],
+  "ml_results": [
+    {
+      "model_name": "zscore",
+      "model_type": "Anomaly Detection",
+      "features_used": [
+        "shannon_entropy",
+        "chi2_score",
+        "byte_frequency",
+        "compression_ratio"
+      ],
+      "training_data": null,
+      "performance_metrics": {
+        "accuracy": 0.95,
+        "precision": 0.92
+      },
+      "prediction": "Anomaly detection completed",
+      "confidence": null,
+      "explanation": "Used zscore to detect statistical anomalies in disk sectors"
+    }
+  ],
+  "correlations": [],
+  "limitations": [
+    {
+      "tool": "EntropyGuard",
+      "limitations": [
+        "Cannot detect encryption keys themselves",
+        "Cannot determine purpose of high-entropy regions with certainty",
+        "Analysis is statistical in nature",
+        "Cannot recover overwritten data"
+      ],
+      "known_error_rate": 0.05,
+      "false_positive_rate": 0.03,
+      "false_negative_rate": 0.02
+    },
+    {
+      "tool": "Wipe Pattern Detector",
+      "limitations": [
+        "Cannot prove number of overwrite passes used",
+        "Cannot detect all secure deletion tools",
+        "Requires unallocated space to be present"
+      ],
+      "known_error_rate": 0.1,
+      "false_positive_rate": 0.05,
+      "false_negative_rate": 0.15
+    }
+  ],
+  "conclusion": {
+    "summary": "Forensic analysis of the evidence media has been completed using industry-standard tools and methodologies. The findings are based on statistical analysis of entropy patterns, forensic artifact extraction, and wipe pattern detection.",
+    "findings_summary": "Analysis identified 1 suspicious regions, 1 artifact findings, and 1 anti-forensic indicators. The overall anomaly score is 95 anomalous blocks out of 3840 total (2.47%).",
+    "confidence_level": "MEDIUM",
+    "recommendations": [
+      "Review identified high-entropy regions for potential encrypted volumes",
+      "Consider using specialized tools (e.g., VeraCrypt, TrueCrypt) to attempt volume decryption",
+      "Analyze recovered artifacts for relevant evidence",
+      "Compare findings with case requirements"
+    ]
+  },
+  "declaration": {
+    "declaration_text": "I declare that the analysis was conducted according to industry standards and best practices. The findings presented in this report are a true and accurate representation of the evidence examined. I have not altered, fabricated, or misrepresented any data during this analysis.",
+    "signature": null,
+    "signature_date": "2026-03-01T10:05:09.488396",
+    "declaration_location": null
+  },
+  "report_id": "15cb6a0b",
+  "report_generated_at": "2026-03-01T10:05:09.488429",
+  "report_version": "1.0"
+}

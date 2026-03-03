@@ -1,0 +1,2 @@
+start_offset,end_offset,size,block_count,mean_entropy,max_entropy,mean_anomaly_score,max_anomaly_score
+135168,512000,376832,92,7.8533,7.9624,100.0,100
