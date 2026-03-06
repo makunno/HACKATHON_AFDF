@@ -754,6 +754,18 @@ The court-admissible report contains **22 sections**:
 
 **Response**: Full analysis result JSON
 
+### GET /api/result/:id/pdf
+
+**Purpose**: Generate and download a court-admissible forensic PDF report
+
+**Response**: Application/PDF streaming document
+
+### WebSockets (Port 3001)
+
+**Purpose**: Stream real-time stdout logs and analyzer progress bars directly to the frontend React UI.
+* **Events Emitted**: `analysis_progress`, `analysis_log`
+* **Room Schema**: `join_analysis(analysisId)`
+
 ### ML API Endpoints (Port 3002)
 
 #### POST /analyze

@@ -266,29 +266,38 @@ cd ../..
 
 ## Running the Application
 
-You need **three terminals** open:
+### The Easy Way (One-Click Start)
+For Windows users, simply double-click the **`Start_AFDF.bat`** file in the root directory. 
+This shortcut will instantly boot up the Frontend, the Node.js Backend, and the Machine Learning API simultaneously in a single terminal.
 
-### Terminal 1 - ML API (Port 3002):
+If you don't want to use the `.bat` file, you can run the same command manually:
+```bash
+npm run start:all
+```
+*Wait a few seconds for the services to boot up, then navigate to **http://localhost:8081**.*
+
+---
+
+### The Manual Way (Three Terminals)
+
+If you prefer to see the logs separated into individual windows or need to restart one service independently:
+
+**Terminal 1 - ML API (Port 3002):**
 ```bash
 cd server/ml-api
-python main.py
+python -m uvicorn main:app --port 3002
 ```
-The ML API runs on http://localhost:3002
-- Loads/trains Random Forest + Isolation Forest models
-- First run trains models with synthetic data
 
-### Terminal 2 - Backend Server (Port 3001):
+**Terminal 2 - Backend Server (Port 3001):**
 ```bash
 cd server
-node server.js
+npm start
 ```
-The backend runs on http://localhost:3001
 
-### Terminal 3 - Frontend (Port 5173 or 8080):
+**Terminal 3 - Frontend (Port 8081):**
 ```bash
 npm run dev
 ```
-The frontend runs on http://localhost:5173 (or http://localhost:8080)
 
 ---
 
