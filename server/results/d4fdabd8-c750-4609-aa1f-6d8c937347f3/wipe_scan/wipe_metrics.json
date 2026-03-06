@@ -1,0 +1,18 @@
+{
+  "image_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\379171d4-873b-4890-9a01-1a847c0f6437-2020JimmyWilson.E01",
+  "start_sector": 0,
+  "unalloc_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\results\\d4fdabd8-c750-4609-aa1f-6d8c937347f3\\wipe_scan\\unalloc.bin",
+  "unalloc_size_bytes": 0,
+  "metrics": {
+    "wipe_zero_bytes_total": 0,
+    "wipe_ff_bytes_total": 0,
+    "wipe_randomlike_bytes_total": 0,
+    "wipe_dod_bytes_total": 0,
+    "wipe_gutmann_bytes_total": 0,
+    "wipe_suspect_chunk_count": 0,
+    "scanned_bytes_total": 0,
+    "detected_wipe_software": []
+  },
+  "regions": [],
+  "error": "blkls not found - ensure The Sleuth Kit is installed"
+}

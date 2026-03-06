@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { io, Socket } from 'socket.io-client';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 import { Upload, FileCheck, AlertCircle, HardDrive, Loader2, File, CheckCircle, XCircle, Activity, Shield, Database } from 'lucide-react';
@@ -16,6 +17,8 @@ export default function UploadPage() {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [statusMessage, setStatusMessage] = useState('');
+  const [analysisLogs, setAnalysisLogs] = useState<{ time: string, message: string }[]>([]);
+  const socketRef = useRef<Socket | null>(null);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -64,25 +67,38 @@ export default function UploadPage() {
     }
 
     setUploading(true);
-    setProgress(10);
-    setStatusMessage('Starting analysis...');
+    setProgress(5);
+    setStatusMessage('Uploading image to server...');
+    setAnalysisLogs([{ time: new Date().toLocaleTimeString(), message: 'Initiating transfer connection...' }]);
+    
+    // Connect to WebSocket server for live updates
+    const socket = io('http://localhost:3001');
+    socketRef.current = socket;
+    
+    socket.on('connect', () => {
+       setAnalysisLogs(prev => [...prev, { time: new Date().toLocaleTimeString(), message: 'Connected to diagnostic stream' }]);
+    });
+    
+    socket.on('analysis_progress', (data: { stage: string, progress: number, message: string }) => {
+       setProgress(data.progress);
+       setStatusMessage(data.stage + ': ' + data.message);
+    });
+
+    socket.on('analysis_log', (data: { time: string, message: string }) => {
+       setAnalysisLogs(prev => [...prev.slice(-19), data]); // Keep last 20 logs
+    });
     
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
       
-      // Simulate progress updates
-      const progressInterval = setInterval(() => {
-        setProgress(p => Math.min(p + 5, 90));
-      }, 2000);
-
       const response = await fetch(`${API_URL}/analyze`, {
         method: 'POST',
         body: formData
       });
 
-      clearInterval(progressInterval);
       setProgress(100);
+      setStatusMessage('Analysis complete! Generating report...');
       
       if (!response.ok) {
         const error = await response.json();
@@ -90,16 +106,34 @@ export default function UploadPage() {
       }
       
       const result = await response.json();
+      
+      // Cleanup socket
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+      
       toast.success('Analysis complete!');
       navigate(`/dashboard/${result.id}`);
       
     } catch (error: any) {
       console.error('Error:', error);
       toast.error(error.message || 'Error analyzing file. Please try again.');
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
     } finally {
       setUploading(false);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      // Cleanup on unmount
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, []);
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -241,9 +275,21 @@ export default function UploadPage() {
                   <Progress value={progress} className="h-2" />
                 </div>
               </div>
-              <p className="text-sm text-gray-400">
-                Analyzing disk for hidden volumes and encrypted regions...
-              </p>
+              <div className="bg-black/50 rounded p-4 h-32 overflow-y-auto font-mono text-xs mt-2 border border-white/5 space-y-1">
+                {analysisLogs.length === 0 ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">[{new Date().toLocaleTimeString()}]</span>
+                    <span className="text-gray-300">Awaiting processing stream...</span>
+                  </div>
+                ) : (
+                  analysisLogs.map((log, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span className="text-gray-500 whitespace-nowrap">[{log.time}]</span>
+                      <span className="text-gray-300 break-words">{log.message}</span>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           )}
 

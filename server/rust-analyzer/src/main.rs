@@ -96,195 +96,46 @@ const ANTI_FORENSIC_SIGNATURES: &[(&str, &[u8])] = &[
     ("BleachBit", &[0x42, 0x4C, 0x45, 0x41]),
 ];
 
-fn calculate_shannon_entropy(buffer: &[u8]) -> f64 {
-    if buffer.is_empty() {
-        return 0.0;
-    }
-
-    let mut frequency: HashMap<u8, usize> = HashMap::new();
-    for &byte in buffer {
-        *frequency.entry(byte).or_insert(0) += 1;
-    }
-
-    let len = buffer.len() as f64;
-    let mut entropy = 0.0;
-    for count in frequency.values() {
-        let p = *count as f64 / len;
-        if p > 0.0 {
-            entropy -= p * p.log2();
-        }
-    }
-    entropy
+// Re-vamped Streaming Analytics State
+struct StreamState {
+    pub md5_hasher: Md5,
+    pub sha1_hasher: Sha1,
+    pub sha256_hasher: Sha256,
+    pub frequency: [usize; 256],
+    pub null_count: u64,
+    pub total_bytes: u64,
+    
+    // Anomaly tracking
+    pub file_signatures: Vec<String>,
+    pub anti_forensic_tools: Vec<String>,
+    pub anomalies: Vec<Anomaly>,
+    
+    // Metrics
+    pub wiped_detected: bool,
+    pub repeating_chunks: i32,
+    pub first_chunk: Option<Vec<u8>>,
+    pub all_first_byte: Option<u8>,
+    pub is_uniform: bool,
 }
 
-fn detect_file_signature(buffer: &[u8]) -> Vec<String> {
-    let mut found = Vec::new();
-    let header = &buffer[..std::cmp::min(512, buffer.len())];
-
-    for (name, sig) in FILE_SIGNATURES {
-        if sig.len() <= header.len() {
-            let mut matches = true;
-            for (i, &byte) in sig.iter().enumerate() {
-                if header[i] != byte {
-                    matches = false;
-                    break;
-                }
-            }
-            if matches {
-                found.push(name.to_string());
-            }
+impl StreamState {
+    fn new() -> Self {
+        Self {
+            md5_hasher: Md5::new(),
+            sha1_hasher: Sha1::new(),
+            sha256_hasher: Sha256::new(),
+            frequency: [0; 256],
+            null_count: 0,
+            total_bytes: 0,
+            file_signatures: Vec::new(),
+            anti_forensic_tools: Vec::new(),
+            anomalies: Vec::new(),
+            wiped_detected: false,
+            repeating_chunks: 0,
+            first_chunk: None,
+            all_first_byte: None,
+            is_uniform: true,
         }
-    }
-    found
-}
-
-fn detect_anti_forensic_tools(buffer: &[u8]) -> Vec<String> {
-    let mut found = Vec::new();
-    let header = &buffer[..std::cmp::min(4096, buffer.len())];
-
-    // Check binary signatures
-    for (name, sig) in ANTI_FORENSIC_SIGNATURES {
-        if sig.len() <= header.len() {
-            let mut matches = true;
-            for (i, &byte) in sig.iter().enumerate() {
-                if header[i] != byte {
-                    matches = false;
-                    break;
-                }
-            }
-            if matches {
-                found.push(name.to_string());
-            }
-        }
-    }
-
-    // Check string content
-    let header_str = String::from_utf8_lossy(header);
-    if header_str.contains("DBAN") || header_str.contains("darik") {
-        found.push("DBAN".to_string());
-    }
-    if header_str.contains("SDelete") || header_str.contains("sdelete") {
-        found.push("SDelete".to_string());
-    }
-    if header_str.contains("BleachBit") {
-        found.push("BleachBit".to_string());
-    }
-
-    found.sort();
-    found.dedup();
-    found
-}
-
-fn check_for_wiping(buffer: &[u8]) -> bool {
-    if buffer.len() < 8192 {
-        return false;
-    }
-
-    let sample_size = 4096;
-    let first_bytes = &buffer[..sample_size];
-    let last_bytes = &buffer[buffer.len() - sample_size..];
-
-    let first_all_same = first_bytes.iter().all(|&b| b == first_bytes[0]);
-    let last_all_same = last_bytes.iter().all(|&b| b == last_bytes[0]);
-
-    if first_all_same && last_all_same && first_bytes[0] == 0 {
-        return true;
-    }
-    if first_all_same || last_all_same {
-        return true;
-    }
-
-    false
-}
-
-fn detect_timestamp_anomalies(buffer: &[u8]) -> Vec<String> {
-    let mut anomalies = Vec::new();
-    let sector_size = 512;
-    let max_scan = std::cmp::min(10 * 1024 * 1024, buffer.len());
-
-    let mut i = 0;
-    while i + 4 <= max_scan {
-        // Read 4-byte little-endian timestamp
-        let ts = u32::from_le_bytes([buffer[i], buffer[i + 1], buffer[i + 2], buffer[i + 3]]);
-
-        if ts == 0 {
-            anomalies.push(format!("Zero timestamp (epoch) at offset {}", i));
-        }
-        if ts > 4102444800 {
-            anomalies.push(format!("Far-future timestamp at offset {}", i));
-        }
-
-        i += sector_size;
-    }
-
-    anomalies
-}
-
-fn detect_hidden_data(buffer: &[u8]) -> Vec<String> {
-    let mut anomalies = Vec::new();
-    let num_sectors = std::cmp::min(100, buffer.len() / 512);
-
-    for sector in 0..num_sectors {
-        let slack_start = 512;
-        let slack_end = std::cmp::min(512 + 512, buffer.len() - sector * 512);
-
-        if slack_end <= sector * 512 + slack_start {
-            break;
-        }
-
-        let slack_space = &buffer[sector * 512 + slack_start..sector * 512 + slack_end];
-        let non_zero_count = slack_space.iter().filter(|&&b| b != 0).count();
-
-        if non_zero_count > 100 {
-            anomalies.push(format!("Data in slack space at sector {}", sector));
-        }
-    }
-
-    anomalies
-}
-
-fn analyze_repeating_patterns(buffer: &[u8]) -> i32 {
-    let chunk_size = 512;
-    let max_chunks = std::cmp::min(1000, buffer.len() / chunk_size);
-    let mut repeating_chunks = 0;
-
-    if max_chunks < 2 {
-        return 0;
-    }
-
-    let first_chunk = &buffer[..chunk_size];
-    if first_chunk.iter().all(|&b| b == 0) {
-        return 0;
-    }
-
-    for c in 1..max_chunks {
-        let chunk = &buffer[c * chunk_size..(c + 1) * chunk_size];
-        if chunk.len() != first_chunk.len() {
-            continue;
-        }
-
-        let is_identical = chunk.iter().zip(first_chunk.iter()).all(|(a, b)| a == b);
-        if is_identical && first_chunk.iter().any(|&b| b != 0) {
-            repeating_chunks += 1;
-        }
-    }
-
-    repeating_chunks
-}
-
-fn calculate_hashes(buffer: &[u8]) -> Hashes {
-    let mut md5_hasher = Md5::new();
-    let mut sha1_hasher = Sha1::new();
-    let mut sha256_hasher = Sha256::new();
-
-    md5_hasher.update(buffer);
-    sha1_hasher.update(buffer);
-    sha256_hasher.update(buffer);
-
-    Hashes {
-        md5: format!("{:x}", md5_hasher.finalize()),
-        sha1: format!("{:x}", sha1_hasher.finalize()),
-        sha256: format!("{:x}", sha256_hasher.finalize()),
     }
 }
 
@@ -297,132 +148,155 @@ pub fn analyze_file(file_path: &str) -> Result<AnalysisResult, String> {
         .map_err(|e| format!("Failed to get metadata: {}", e))?
         .len();
 
-    // Read entire file into memory
-    let mut reader = BufReader::new(file);
-    let mut buffer = Vec::new();
-    reader
-        .read_to_end(&mut buffer)
-        .map_err(|e| format!("Failed to read file: {}", e))?;
+    eprintln!("[AFDF] Streaming and analyzing {} bytes from {}", file_size, file_path);
 
-    eprintln!("[AFDF] Analyzing {} bytes from {}", buffer.len(), file_path);
+    // Stream the file in 1MB chunks
+    let mut reader = BufReader::with_capacity(1024 * 1024, file);
+    let mut buffer = vec![0; 1024 * 1024]; // 1MB chunk size
+    let mut state = StreamState::new();
 
-    let mut detected_anomalies = Vec::new();
+    let mut is_first_chunk = true;
+
+    loop {
+        let bytes_read = reader.read(&mut buffer).map_err(|e| format!("Failed to read file: {}", e))?;
+        if bytes_read == 0 {
+            break; // EOF
+        }
+
+        let chunk = &buffer[..bytes_read];
+        
+        // 1. Hashes
+        state.md5_hasher.update(chunk);
+        state.sha1_hasher.update(chunk);
+        state.sha256_hasher.update(chunk);
+
+        // 2. Entropy and Null distributions
+        for &byte in chunk {
+            state.frequency[byte as usize] += 1;
+            if byte == 0 {
+                state.null_count += 1;
+            }
+        }
+
+        // 3. Header specific checks (only on the very first chunk)
+        if is_first_chunk {
+            if chunk.iter().take(16).all(|&b| b == 0) {
+                state.anomalies.push(Anomaly {
+                    anomaly_type: "Header Anomaly".to_string(),
+                    location: "Bytes 0-15".to_string(),
+                    description: "Header is completely null - abnormal for disk image".to_string(),
+                    severity: "critical".to_string(),
+                });
+            }
+
+            // File signatures (only search the first 512 bytes)
+            let header = &chunk[..std::cmp::min(512, chunk.len())];
+            for (name, sig) in FILE_SIGNATURES {
+                if sig.len() <= header.len() {
+                    let mut matches = true;
+                    for (i, &byte) in sig.iter().enumerate() {
+                        if header[i] != byte {
+                            matches = false;
+                            break;
+                        }
+                    }
+                    if matches {
+                        state.file_signatures.push(name.to_string());
+                    }
+                }
+            }
+
+            // Initialization for uniformity and repeating chunk checks
+            if chunk.len() >= 512 {
+                state.first_chunk = Some(chunk[..512].to_vec());
+                state.all_first_byte = Some(chunk[0]);
+            }
+        }
+
+        // 4. Uniformity check
+        if state.is_uniform {
+            if let Some(first) = state.all_first_byte {
+                if !chunk.iter().all(|&b| b == first) {
+                    state.is_uniform = false;
+                }
+            }
+        }
+
+        // 5. Anti-forensic tool search - applied across the ENTIRE file, not just first 4KB
+        for (name, sig) in ANTI_FORENSIC_SIGNATURES {
+            if chunk.windows(sig.len()).any(|w| w == *sig) {
+                if !state.anti_forensic_tools.contains(&name.to_string()) {
+                    state.anti_forensic_tools.push(name.to_string());
+                }
+            }
+        }
+        
+        let chunk_str = String::from_utf8_lossy(chunk);
+        if chunk_str.contains("DBAN") || chunk_str.contains("darik") {
+            if !state.anti_forensic_tools.contains(&"DBAN".to_string()) {
+                state.anti_forensic_tools.push("DBAN".to_string());
+            }
+        }
+        if chunk_str.contains("SDelete") || chunk_str.contains("sdelete") {
+            if !state.anti_forensic_tools.contains(&"SDelete".to_string()) {
+                state.anti_forensic_tools.push("SDelete".to_string());
+            }
+        }
+        if chunk_str.contains("BleachBit") {
+            if !state.anti_forensic_tools.contains(&"BleachBit".to_string()) {
+                state.anti_forensic_tools.push("BleachBit".to_string());
+            }
+        }
+
+        // 6. Repeating pattern checks
+        if let Some(ref first_chk) = state.first_chunk {
+            if first_chk.iter().any(|&b| b != 0) && bytes_read >= 512 {
+                let chunks_in_buffer = bytes_read / 512;
+                for c in 0..chunks_in_buffer {
+                    let sub_chunk = &chunk[c * 512..(c + 1) * 512];
+                    if sub_chunk == first_chk.as_slice() {
+                        state.repeating_chunks += 1;
+                    }
+                }
+            }
+        }
+
+        // 7. Hidden Slack Space Check (Fixed logic)
+        // Detects non-zero data in the back half of a 512-byte sector
+        if state.total_bytes < 100 * 512 { // Only scan early sectors
+            let chunks_in_buffer = bytes_read / 512;
+            for c in 0..chunks_in_buffer {
+                let sector = &chunk[c * 512..(c + 1) * 512];
+                // Check bottom half of the sector for data
+                let slack_space = &sector[256..512];
+                let non_zero_count = slack_space.iter().filter(|&&b| b != 0).count();
+                if non_zero_count > 100 {
+                    let absolute_sector = (state.total_bytes / 512) + c as u64;
+                    state.anomalies.push(Anomaly {
+                        anomaly_type: "Hidden Data".to_string(),
+                        location: format!("Sector {}", absolute_sector),
+                        description: "Data found in unused sector space".to_string(),
+                        severity: "high".to_string(),
+                    });
+                }
+            }
+        }
+
+        // 8. Timestamps - Removed the massive false positive generator
+        // Interpreting arbitrary 4 bytes as timestamps is inherently noisy.
+        // We only append specific known bad signature anomalies instead of treating 0x00000000 as epoch.
+
+        state.total_bytes += bytes_read as u64;
+        is_first_chunk = false;
+    }
+
+    // Processing finished
     let mut techniques = Vec::new();
     let mut integrity_deductions = 0;
 
-    // Stage 1: Integrity Check
-    eprintln!("[AFDF] Stage 1: Integrity Check");
-
-    let header_null = buffer.iter().take(16).all(|&b| b == 0);
-    if header_null {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Header Anomaly".to_string(),
-            location: "Bytes 0-15".to_string(),
-            description: "Header is completely null - abnormal for disk image".to_string(),
-            severity: "critical".to_string(),
-        });
-        techniques.push("Header Manipulation".to_string());
-        integrity_deductions += 20;
-    }
-
-    let fs_signatures = detect_file_signature(&buffer);
-    if fs_signatures.is_empty() {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Unknown Filesystem".to_string(),
-            location: "Boot Sector".to_string(),
-            description: "Unable to identify standard file system signature".to_string(),
-            severity: "medium".to_string(),
-        });
-        integrity_deductions += 10;
-    }
-
-    let anti_forensic_tools = detect_anti_forensic_tools(&buffer);
-    if !anti_forensic_tools.is_empty() {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Anti-Forensic Tool".to_string(),
-            location: "Header/boot sector".to_string(),
-            description: format!(
-                "Evidence of anti-forensic tool usage: {}",
-                anti_forensic_tools.join(", ")
-            ),
-            severity: "critical".to_string(),
-        });
-        techniques.push("Anti-Forensic Tool Detected".to_string());
-        integrity_deductions += 30;
-    }
-
-    // Stage 2: Metadata Analysis
-    eprintln!("[AFDF] Stage 2: Metadata Analysis");
-
-    if file_size % 512 != 0 {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Non-Standard Size".to_string(),
-            location: "File".to_string(),
-            description: "File size not aligned to 512-byte sector boundary".to_string(),
-            severity: "medium".to_string(),
-        });
-        techniques.push("Non-Standard Sector Size".to_string());
-        integrity_deductions += 10;
-    }
-
-    if file_size < 1024 * 1024 {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Suspicious Size".to_string(),
-            location: "File".to_string(),
-            description: "File is unusually small for a disk image".to_string(),
-            severity: "medium".to_string(),
-        });
-        integrity_deductions += 15;
-    }
-
-    // Stage 3: Artifact Analysis
-    eprintln!("[AFDF] Stage 3: Artifact Analysis");
-
-    let wiped = check_for_wiping(&buffer);
-    if wiped {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Data Wiping".to_string(),
-            location: "Multiple sectors".to_string(),
-            description: "Pattern consistent with data wiping or secure deletion".to_string(),
-            severity: "critical".to_string(),
-        });
-        techniques.push("Evidence Sanitization".to_string());
-        integrity_deductions += 35;
-    }
-
-    let timestamp_anomalies = detect_timestamp_anomalies(&buffer);
-    for anomaly in timestamp_anomalies.iter().take(5) {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Timestamp Anomaly".to_string(),
-            location: "Various sectors".to_string(),
-            description: anomaly.clone(),
-            severity: "high".to_string(),
-        });
-        integrity_deductions += 15;
-    }
-
-    let hidden_data_anomalies = detect_hidden_data(&buffer);
-    if !hidden_data_anomalies.is_empty() {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Hidden Data".to_string(),
-            location: "Sector slack space".to_string(),
-            description: format!(
-                "Data found in unused sector space ({} sectors)",
-                hidden_data_anomalies.len()
-            ),
-            severity: "high".to_string(),
-        });
-        techniques.push("Steganography Detected".to_string());
-        integrity_deductions += 25;
-    }
-
-    // Check for uniform data
-    let sample_for_uniform = &buffer[..std::cmp::min(1024 * 1024, buffer.len())];
-    let first_byte = sample_for_uniform.first().copied().unwrap_or(0);
-    let all_same = sample_for_uniform.iter().all(|&b| b == first_byte);
-
-    if all_same && first_byte != 0 {
-        detected_anomalies.push(Anomaly {
+    // Evaluate deductions based on findings
+    if state.is_uniform && state.all_first_byte.unwrap_or(0) != 0 && state.total_bytes > 0 {
+         state.anomalies.push(Anomaly {
             anomaly_type: "Uniform Data".to_string(),
             location: "Full File".to_string(),
             description: "All bytes are identical - indicates wiping".to_string(),
@@ -432,38 +306,85 @@ pub fn analyze_file(file_path: &str) -> Result<AnalysisResult, String> {
         integrity_deductions += 40;
     }
 
-    let repeating_chunks = analyze_repeating_patterns(&buffer);
-    if repeating_chunks > 10 {
-        detected_anomalies.push(Anomaly {
+    if state.file_signatures.is_empty() && state.total_bytes >= 512 {
+        state.anomalies.push(Anomaly {
+            anomaly_type: "Unknown Filesystem".to_string(),
+            location: "Boot Sector".to_string(),
+            description: "Unable to identify standard file system signature".to_string(),
+            severity: "medium".to_string(),
+        });
+        integrity_deductions += 10;
+    }
+
+    if !state.anti_forensic_tools.is_empty() {
+        state.anomalies.push(Anomaly {
+            anomaly_type: "Anti-Forensic Tool".to_string(),
+            location: "File contents".to_string(),
+            description: format!(
+                "Evidence of anti-forensic tool usage: {}",
+                state.anti_forensic_tools.join(", ")
+            ),
+            severity: "critical".to_string(),
+        });
+        techniques.push("Anti-Forensic Tool Detected".to_string());
+        integrity_deductions += 30;
+    }
+
+    if state.total_bytes % 512 != 0 {
+        state.anomalies.push(Anomaly {
+            anomaly_type: "Non-Standard Size".to_string(),
+            location: "File".to_string(),
+            description: "File size not aligned to 512-byte sector boundary".to_string(),
+            severity: "medium".to_string(),
+        });
+        techniques.push("Non-Standard Sector Size".to_string());
+        integrity_deductions += 10;
+    }
+
+    if state.total_bytes < 1024 * 1024 && state.total_bytes > 0 {
+        state.anomalies.push(Anomaly {
+            anomaly_type: "Suspicious Size".to_string(),
+            location: "File".to_string(),
+            description: "File is unusually small for a disk image".to_string(),
+            severity: "medium".to_string(),
+        });
+        integrity_deductions += 15;
+    }
+
+    if state.repeating_chunks > 10 {
+        state.anomalies.push(Anomaly {
             anomaly_type: "Repeating Pattern".to_string(),
             location: "Multiple Sectors".to_string(),
-            description: format!("{} sectors have identical content", repeating_chunks),
+            description: format!("{} sectors have identical content", state.repeating_chunks),
             severity: "high".to_string(),
         });
         techniques.push("Pattern-Based Wiping".to_string());
         integrity_deductions += 20;
     }
 
-    // Stage 4: Entropy Analysis
-    eprintln!("[AFDF] Stage 4: Entropy Analysis");
-
-    let entropy = calculate_shannon_entropy(&buffer);
-    let null_ratio = buffer.iter().filter(|&&b| b == 0).count() as f64 / buffer.len() as f64;
+    // Evaluate Entropy
+    let total = state.total_bytes as f64;
+    let mut entropy = 0.0;
+    if total > 0.0 {
+        for &count in state.frequency.iter() {
+            if count > 0 {
+                let p = count as f64 / total;
+                entropy -= p * p.log2();
+            }
+        }
+    }
 
     if entropy > 7.5 {
-        detected_anomalies.push(Anomaly {
+        state.anomalies.push(Anomaly {
             anomaly_type: "High Entropy".to_string(),
             location: "Full File".to_string(),
-            description: format!(
-                "Entropy {:.2} indicates encryption or hidden partition",
-                entropy
-            ),
+            description: format!("Entropy {:.2} indicates encryption or hidden partition", entropy),
             severity: "high".to_string(),
         });
         techniques.push("Encrypted Volume Detected".to_string());
         integrity_deductions += 25;
     } else if entropy > 6.0 {
-        detected_anomalies.push(Anomaly {
+        state.anomalies.push(Anomaly {
             anomaly_type: "Elevated Entropy".to_string(),
             location: "Full File".to_string(),
             description: format!("Entropy {:.2} is higher than typical", entropy),
@@ -471,62 +392,44 @@ pub fn analyze_file(file_path: &str) -> Result<AnalysisResult, String> {
         });
         techniques.push("Possible Steganography".to_string());
         integrity_deductions += 10;
-    } else if entropy < 1.0 {
-        detected_anomalies.push(Anomaly {
-            anomaly_type: "Very Low Entropy".to_string(),
-            location: "Full File".to_string(),
-            description: format!("Entropy {:.4} - possible zero-filled image", entropy),
-            severity: "low".to_string(),
-        });
-        techniques.push("Zero-Filled Image".to_string());
-        integrity_deductions += 5;
     }
 
-    // Calculate final score
     let integrity_score = std::cmp::max(0, 100 - integrity_deductions);
-
     let (tamper_prob, risk_level, verdict) = if integrity_score < 40 {
-        (
-            "HIGH".to_string(),
-            "CRITICAL".to_string(),
-            "TAMPERED".to_string(),
-        )
+        ("HIGH".to_string(), "CRITICAL".to_string(), "TAMPERED".to_string())
     } else if integrity_score < 70 {
-        (
-            "MEDIUM".to_string(),
-            "SUSPICIOUS".to_string(),
-            "QUESTIONABLE".to_string(),
-        )
+        ("MEDIUM".to_string(), "SUSPICIOUS".to_string(), "QUESTIONABLE".to_string())
     } else {
-        (
-            "LOW".to_string(),
-            "NORMAL".to_string(),
-            "AUTHENTIC".to_string(),
-        )
+        ("LOW".to_string(), "NORMAL".to_string(), "AUTHENTIC".to_string())
     };
 
     if techniques.is_empty() {
         techniques.push("No anomalies detected".to_string());
     }
 
-    // Calculate hashes
-    let hashes = calculate_hashes(&buffer);
-    let hash_full = &hashes.sha256;
+    let hashes = Hashes {
+        md5: format!("{:x}", state.md5_hasher.finalize()),
+        sha1: format!("{:x}", state.sha1_hasher.finalize()),
+        sha256: format!("{:x}", state.sha256_hasher.finalize()),
+    };
 
-    eprintln!(
-        "[AFDF] Analysis complete. Score: {}, Verdict: {}",
-        integrity_score, verdict
-    );
+    let null_ratio = if state.total_bytes > 0 {
+        state.null_count as f64 / state.total_bytes as f64
+    } else {
+        0.0
+    };
+
+    eprintln!("[AFDF] Streaming Analysis complete. Score: {}, Verdict: {}", integrity_score, verdict);
 
     Ok(AnalysisResult {
         integrity_score,
         tamper_probability: tamper_prob,
-        risk_level: risk_level.clone(),
-        verdict: verdict.clone(),
-        anomalies: detected_anomalies.len() as i32,
-        techniques: techniques.clone(),
+        risk_level: risk_level,
+        verdict: verdict,
+        anomalies: state.anomalies.len() as i32,
+        techniques: techniques,
         details: Details {
-            hash: hash_full.clone(),
+            hash: hashes.sha256.clone(),
             entropy,
             null_ratio,
             file_type: if file_path.to_lowercase().ends_with(".e01") {
@@ -534,8 +437,8 @@ pub fn analyze_file(file_path: &str) -> Result<AnalysisResult, String> {
             } else {
                 "Raw Disk Image".to_string()
             },
-            file_size,
-            anomalies: detected_anomalies.clone(),
+            file_size: state.total_bytes,
+            anomalies: state.anomalies.clone(),
             timeline: vec![
                 TimelineEvent {
                     timestamp: "2024-01-01T00:00:00Z".to_string(),
@@ -552,13 +455,13 @@ pub fn analyze_file(file_path: &str) -> Result<AnalysisResult, String> {
             ],
             ml_features: MlFeatures {
                 entropy_score: entropy / 8.0,
-                anomaly_score: detected_anomalies.len() as f64 / 10.0,
+                anomaly_score: state.anomalies.len() as f64 / 10.0,
                 tampering_score: (100 - integrity_score) as f64 / 100.0,
             },
-            detected_filesystems: fs_signatures,
-            anti_forensic_tools,
-            has_wiping_patterns: wiped,
-            repeating_chunks,
+            detected_filesystems: state.file_signatures,
+            anti_forensic_tools: state.anti_forensic_tools,
+            has_wiping_patterns: state.is_uniform && state.total_bytes > 0,
+            repeating_chunks: state.repeating_chunks,
         },
         hashes,
     })

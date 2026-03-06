@@ -7,15 +7,44 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 import crypto from 'crypto';
+import http from 'http';
+import { Server } from 'socket.io';
+import PDFDocument from 'pdfkit';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:8081', 'http://localhost:8080'], 
+    methods: ['GET', 'POST']
+  }
+});
+
 const PORT = 3001;
 
+// Socket.io connection handling
+io.on('connection', (socket) => {
+  console.log(`[Socket] Client connected: ${socket.id}`);
+  
+  socket.on('join_analysis', (analysisId) => {
+    socket.join(analysisId);
+    console.log(`[Socket] Client ${socket.id} joined room ${analysisId}`);
+  });
+  
+  socket.on('disconnect', () => {
+    console.log(`[Socket] Client disconnected: ${socket.id}`);
+  });
+});
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:8081', 'http://localhost:8080'],
+  methods: ['GET', 'POST'],
+  optionsSuccessStatus: 200
+}));
 app.use(express.json({ limit: '500mb' }));
 
 // Configure multer for large file uploads
@@ -50,9 +79,15 @@ const RUST_BIN = process.platform === 'win32'
 const ML_API_URL = 'http://localhost:3002';
 
 // Run analysis using Rust binary
-function analyzeWithRust(filePath) {
+function analyzeWithRust(filePath, analysisId, io) {
   return new Promise((resolve, reject) => {
     console.log(`[Server] Running Rust analyzer on: ${filePath}`);
+    
+    io.to(analysisId).emit('analysis_progress', {
+      stage: 'Rust Analysis',
+      progress: 60,
+      message: 'Starting fast binary analysis...'
+    });
     
     const rustProcess = spawn(RUST_BIN, ['--file', filePath], {
       cwd: path.dirname(RUST_BIN)
@@ -62,11 +97,24 @@ function analyzeWithRust(filePath) {
     let stderr = '';
 
     rustProcess.stdout.on('data', (data) => {
-      stdout += data.toString();
+      const text = data.toString();
+      stdout += text;
+      // Filter out raw JSON dump at the end for the logs
+      if (!text.trim().startsWith('{')) {
+        io.to(analysisId).emit('analysis_log', {
+          time: new Date().toLocaleTimeString(),
+          message: text.trim()
+        });
+      }
     });
 
     rustProcess.stderr.on('data', (data) => {
-      stderr += data.toString();
+      const text = data.toString();
+      stderr += text;
+      io.to(analysisId).emit('analysis_log', {
+        time: new Date().toLocaleTimeString(),
+        message: text.trim()
+      });
     });
 
     rustProcess.on('close', (code) => {
@@ -159,18 +207,21 @@ async function analyzeWithML(rustResult, pythonResult) {
 function calculateFileHashes(filePath) {
   return new Promise((resolve, reject) => {
     const md5Hash = crypto.createHash('md5');
+    const sha1Hash = crypto.createHash('sha1');
     const sha256Hash = crypto.createHash('sha256');
     
     const stream = fs.createReadStream(filePath);
     
     stream.on('data', (chunk) => {
       md5Hash.update(chunk);
+      sha1Hash.update(chunk);
       sha256Hash.update(chunk);
     });
     
     stream.on('end', () => {
       resolve({
         md5: md5Hash.digest('hex'),
+        sha1: sha1Hash.digest('hex'),
         sha256: sha256Hash.digest('hex')
       });
     });
@@ -352,9 +403,15 @@ function detectEmbeddedFilesystem(filePath) {
 }
 
 // Run Python entropy and wipe scan analysis
-async function analyzeWithPython(filePath, analysisId) {
+async function analyzeWithPython(filePath, analysisId, io) {
   return new Promise((resolve) => {
     console.log('[Server] Running Python entropy/wipe scan...');
+    
+    io.to(analysisId).emit('analysis_progress', {
+      stage: 'Python Analysis',
+      progress: 20,
+      message: 'Starting deep entropy & unallocated space scan...'
+    });
     
     // Create a unique output directory for this analysis
     const outputDir = path.join(__dirname, 'results', analysisId);
@@ -389,11 +446,23 @@ async function analyzeWithPython(filePath, analysisId) {
     let stderr = '';
 
     pythonProcess.stdout.on('data', (data) => {
-      stdout += data.toString();
+      const text = data.toString();
+      stdout += text;
+      
+      // Look for progress updates in Python output
+      io.to(analysisId).emit('analysis_log', {
+         time: new Date().toLocaleTimeString(),
+         message: text.trim().split('\n').pop()
+      });
     });
 
     pythonProcess.stderr.on('data', (data) => {
-      stderr += data.toString();
+      const text = data.toString();
+      stderr += text;
+      io.to(analysisId).emit('analysis_log', {
+         time: new Date().toLocaleTimeString(),
+         message: text.trim().split('\n').pop()
+      });
     });
 
     pythonProcess.on('close', (code) => {
@@ -457,6 +526,13 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
     
     console.log(`[Server] Received file: ${req.file.originalname} (${fileSize} bytes), ID: ${analysisId}`);
     
+    // Notify client that analysis has started
+    io.to(analysisId).emit('analysis_progress', {
+      stage: 'Initialization',
+      progress: 5,
+      message: `Starting analysis of ${req.file.originalname} (${(fileSize / 1024 / 1024).toFixed(2)} MB)`
+    });
+    
     // Calculate file hashes
     console.log('[Server] Calculating file hashes...');
     const hashes = await calculateFileHashes(filePath);
@@ -474,12 +550,18 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
     console.log('[Server] Filesystem:', JSON.stringify(filesystemDetection));
     
     // Run Python entropy/wipe scan analysis first (needed for ML features)
-    const pythonResult = await analyzeWithPython(filePath, analysisId);
+    const pythonResult = await analyzeWithPython(filePath, analysisId, io);
     console.log('[Server] Python analysis complete');
     
     // Run Rust analysis
-    const rustResult = await analyzeWithRust(filePath);
+    const rustResult = await analyzeWithRust(filePath, analysisId, io);
     console.log('[Server] Rust analysis complete');
+    
+    io.to(analysisId).emit('analysis_progress', {
+      stage: 'Machine Learning Ensemble',
+      progress: 90,
+      message: 'Processing features through Random Forest and Isolation Forest...'
+    });
     
     // Run ML analysis with results from both
     const mlResult = await analyzeWithML(rustResult, pythonResult);
@@ -493,7 +575,7 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
       // File integrity - hashes calculated from the actual file
       hashes: {
         md5: hashes.md5,
-        sha1: '',
+        sha1: hashes.sha1,
         sha256: hashes.sha256
       },
       // File validation from magic bytes
@@ -561,15 +643,15 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
       JSON.stringify(finalResult, null, 2)
     );
     
-    // Clean up uploaded file after analysis
-    setTimeout(() => {
-      try {
+    // Clean up uploaded file synchronously AFTER all analysis is entirely finished
+    try {
+      if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
         console.log(`[Server] Cleaned up: ${filePath}`);
-      } catch (e) {
-        console.error(`[Server] Failed to cleanup: ${filePath}`, e);
       }
-    }, 60000);
+    } catch (e) {
+      console.error(`[Server] Failed to cleanup: ${filePath}`, e);
+    }
     
     res.json({
       id: analysisId,
@@ -578,6 +660,14 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
     
   } catch (error) {
     console.error('[Server] Analysis error:', error);
+    
+    // Attempt cleanup on error as well
+    try {
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+    } catch (e) { /* ignore cleanup error */ }
+    
     res.status(500).json({ error: error.message });
   }
 });
@@ -624,6 +714,80 @@ app.get('/api/result/:id', (req, res) => {
   res.json(result);
 });
 
+// Download PDF report
+app.get('/api/result/:id/pdf', (req, res) => {
+  const { id } = req.params;
+  
+  // Try to find the result
+  let result = analysisResults.get(id);
+  if (!result) {
+    try {
+      const resultsDir = path.join(__dirname, 'results', id);
+      const analysisResultPath = path.join(resultsDir, 'analysis_result.json');
+      if (fs.existsSync(analysisResultPath)) {
+        const content = fs.readFileSync(analysisResultPath, 'utf-8');
+        result = JSON.parse(content);
+      }
+    } catch (e) { }
+  }
+  
+  if (!result) {
+    return res.status(404).json({ error: 'Analysis not found' });
+  }
+  
+  // Generate PDF
+  const doc = new PDFDocument({ margin: 50 });
+  
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename=Forensic_Report_${id.substring(0,8)}.pdf`);
+  doc.pipe(res);
+  
+  // Title
+  doc.fontSize(24).text('AFDF Forensic Analysis Report', { align: 'center' });
+  doc.moveDown(1);
+  
+  // Metadata
+  doc.fontSize(12);
+  doc.text(`Analysis ID: ${id}`);
+  doc.text(`Analyzed At: ${new Date(result.analyzedAt).toLocaleString()}`);
+  doc.text(`File Name: ${result.fileName}`);
+  doc.text(`File Size: ${result.fileSize} bytes`);
+  doc.moveDown(1);
+  
+  // Verdict
+  doc.fontSize(16).text('Verdict', { underline: true });
+  doc.fontSize(14).text(`Overall Verdict: ${result.verdict}`);
+  doc.fontSize(12).text(`Integrity Score: ${result.integrityScore}/100`);
+  doc.text(`Tamper Probability: ${result.tamperProbability}`);
+  doc.text(`Risk Level: ${result.riskLevel}`);
+  doc.moveDown(1);
+  
+  // Hashes
+  if (result.hashes) {
+    doc.fontSize(16).text('Cryptographic Hashes', { underline: true });
+    doc.fontSize(10);
+    doc.text(`MD5: ${result.hashes.md5}`);
+    doc.text(`SHA1: ${result.hashes.sha1}`);
+    doc.text(`SHA256: ${result.hashes.sha256}`);
+    doc.moveDown(2);
+  }
+  
+  // Anomalies
+  if (result.details && result.details.anomalies && result.details.anomalies.length > 0) {
+    doc.fontSize(16).text('Detected Anomalies', { underline: true });
+    doc.fontSize(12);
+    result.details.anomalies.forEach((anomaly) => {
+      doc.text(`• Type: ${anomaly.type || anomaly.anomaly_type}`);
+      doc.text(`  Location: ${anomaly.location}`);
+      doc.text(`  Description: ${anomaly.description}`);
+      doc.text(`  Severity: ${anomaly.severity}`);
+      doc.moveDown(0.5);
+    });
+  }
+  
+  doc.end();
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   const rustExists = fs.existsSync(RUST_BIN);
@@ -644,10 +808,11 @@ app.get('/api/health', (req, res) => {
     }));
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`AFDF Server running on http://localhost:${PORT}`);
   console.log(`Rust analyzer: ${RUST_BIN}`);
   console.log(`ML API: ${ML_API_URL}`);
   console.log('Upload endpoint: POST /api/analyze');
   console.log('Results endpoint: GET /api/result/:id');
+  console.log('WebSocket: enabled');
 });

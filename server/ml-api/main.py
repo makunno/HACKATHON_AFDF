@@ -338,7 +338,7 @@ def predict_with_model(features: AnalysisFeatures) -> MLAnalysisResult:
     # =====================
     # Weight: Random Forest (60%) + Isolation Forest (40%)
     rf_weight = 0.6
-    iso_weight = 0.0
+    iso_weight = 0.4
     
     # Calculate ensemble score
     # RF: AUTHENTIC=0, QUESTIONABLE=1, TAMPERED=2

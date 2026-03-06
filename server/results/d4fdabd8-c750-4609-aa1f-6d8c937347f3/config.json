@@ -1,0 +1,10 @@
+{
+  "disk_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\379171d4-873b-4890-9a01-1a847c0f6437-2020JimmyWilson.E01",
+  "output_dir": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\results\\d4fdabd8-c750-4609-aa1f-6d8c937347f3",
+  "scan_id": "d4fdabd8-c750-4609-aa1f-6d8c937347f3",
+  "block_size": 4096,
+  "num_workers": 4,
+  "methods": [
+    "zscore"
+  ]
+}

@@ -231,6 +231,8 @@ def extract_all_features(data: bytes, offset: int = 0) -> BlockFeatures:
     Returns:
         BlockFeatures object with all calculated features
     """
+    stats = calculate_statistics(data)
+    
     return BlockFeatures(
         offset=offset,
         size=len(data),
@@ -239,8 +241,8 @@ def extract_all_features(data: bytes, offset: int = 0) -> BlockFeatures:
         byte_frequencies=calculate_byte_frequencies(data),
         serial_correlation=calculate_serial_correlation(data),
         compression_ratio=calculate_compression_ratio(data),
-        mean_byte=calculate_statistics(data)[0],
-        std_byte=calculate_statistics(data)[1],
+        mean_byte=stats[0],
+        std_byte=stats[1],
         null_ratio=calculate_null_ratio(data),
     )
 

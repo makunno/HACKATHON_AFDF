@@ -1,0 +1,18 @@
+{
+  "image_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\uploads\\20f59dc7-7665-4d91-9f43-545af5740327-fat-img-kw.dd",
+  "start_sector": 0,
+  "unalloc_path": "C:\\Users\\sk8er\\Downloads\\AFDF-updated_updated_more\\server\\results\\0913321c-8af7-4f14-88dc-3331e33865b6\\wipe_scan\\unalloc.bin",
+  "unalloc_size_bytes": 0,
+  "metrics": {
+    "wipe_zero_bytes_total": 0,
+    "wipe_ff_bytes_total": 0,
+    "wipe_randomlike_bytes_total": 0,
+    "wipe_dod_bytes_total": 0,
+    "wipe_gutmann_bytes_total": 0,
+    "wipe_suspect_chunk_count": 0,
+    "scanned_bytes_total": 0,
+    "detected_wipe_software": []
+  },
+  "regions": [],
+  "error": "blkls not found - ensure The Sleuth Kit is installed"
+}
